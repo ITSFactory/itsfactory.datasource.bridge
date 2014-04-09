@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="request" class="fi.itsfactory.siri.vm.uploader.request.VehicleMonitoringRefRequest">
+		<constructor-arg index="0" value="https://siri.ij2010.tampere.fi/ws" />
+		<constructor-arg index="1" value="Basic aXRzZmFjdG9yeU9CQTpjYmVyMjVzVw==" />
+		<constructor-arg index="2" value="3000" type="java.lang.Long"/>
+		<constructor-arg index="3" value="ITS-Factory"/>
+		
+		<property name="vehicleMonitoringRef" value="VEHICLES_ALL" />
+ 	</bean>
+
+	<bean id="memcachedListener" class="fi.itsfactory.siri.vm.uploader.listener.MemcachedListener">
+		<constructor-arg index="0" value="localhost:11211"></constructor-arg>
+		<constructor-arg index="1" value="SIRI_VM_LATEST_ALL"></constructor-arg>
+	</bean>
+	
+	<bean id="statisticsListener" class="fi.itsfactory.siri.vm.uploader.listener.StatisticsListener" />
+	
+	<bean class="fi.itsfactory.siri.vm.uploader.UploaderServer">
+ 		<constructor-arg index="0" ref="request" />	
+		
+		<property name="listeners">
+			<list>
+				<ref bean="statisticsListener"/>
+				<ref bean="memcachedListener"/>
+			</list>
+		</property>
+	</bean>
+</beans>
