@@ -26,6 +26,8 @@ public class HttpConnector {
 	            .setCookieSpec(CookieSpecs.IGNORE_COOKIES)
 	            .setConnectTimeout(10000)
 	            .setSocketTimeout(10000)
+	            .setConnectionRequestTimeout(10000)
+	            .setStaleConnectionCheckEnabled(true)
 	            .build();
 		
         CloseableHttpClient client = HttpClients.custom()

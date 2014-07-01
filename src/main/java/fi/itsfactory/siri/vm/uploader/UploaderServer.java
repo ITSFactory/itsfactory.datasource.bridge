@@ -1,5 +1,6 @@
 package fi.itsfactory.siri.vm.uploader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,22 +11,26 @@ import fi.itsfactory.siri.vm.uploader.request.Request;
 import fi.itsfactory.siri.vm.uploader.service.PollerService;
 
 public class UploaderServer {
-	private Request request;
+	private List<Request> requests;
 	
-	private PollerService repeater;	
+	private List<PollerService> repeaters;	
 	private List<ResponseListener> listeners;
 	private static Logger logger = Logger.getLogger(UploaderServer.class.getName());
 	
-	public UploaderServer(Request request) {
-		this.request = request;
-		repeater = null;
+	public UploaderServer(List<Request> requests) {
+		this.requests = requests;
+		repeaters = new ArrayList<PollerService>();
 	}
 	
 	public void start(){
-		repeater = new PollerService(request, listeners);
-		repeater.startAsync();
-		repeater.awaitRunning();
-		
+	    for(Request request : this.requests){
+	        PollerService repeater = new PollerService(request);
+	        repeater.startAsync();
+	        repeater.awaitRunning();
+	        
+	        repeaters.add(repeater);
+	    }
+	    
 		logger.info("Main thread starting.");
 		while(true){
 			try {
@@ -37,11 +42,15 @@ public class UploaderServer {
 	}
 	
 	public void stop(){
-		if(repeater != null){
-			logger.info("Stopping the service...");
-			repeater.stopAsync();
-			repeater.awaitTerminated();
-			logger.info("Service stopped.");
+		if(this.repeaters != null){
+    	    for(PollerService repeater : this.repeaters){
+    	        if(repeater != null){
+    	            logger.info("Stopping the service...");
+    	            repeater.stopAsync();
+    	            repeater.awaitTerminated();
+    	            logger.info("Service stopped.");
+    	        }		    
+    		}
 		}
 	}
 	

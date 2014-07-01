@@ -6,7 +6,7 @@ public class StatisticsListener implements ResponseListener {
 	private static Logger logger = Logger.getLogger(StatisticsListener.class.getName());
 	@Override
 	public void handleResponse(ListenerResponse response) {
-		logger.info("Received response with " + response.getResponse().length() + " characters in "
+	    logger.info("Received response with " + response.getResponse().length() + " characters in "
 				+ (response.getResponseTime().longValue()) + " ms.");
 	}
 

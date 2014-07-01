@@ -2,6 +2,7 @@ package fi.itsfactory.siri.vm.uploader.request;
 
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +11,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import fi.itsfactory.siri.vm.uploader.listener.ResponseListener;
 import uk.org.siri.siri.ParticipantRefStructure;
 import uk.org.siri.siri.ServiceRequest;
 import uk.org.siri.siri.Siri;
@@ -24,6 +26,7 @@ public class VehicleMonitoringRefRequest implements Request{
 	private String payload;
 	private Map<String, String> payloadParameters;
 	
+	private List<ResponseListener> listeners;
 	private String vehicleMonitoringRef;
 	
 	private static Logger logger = Logger.getLogger(VehicleMonitoringRefRequest.class.getName());
@@ -111,5 +114,13 @@ public class VehicleMonitoringRefRequest implements Request{
 
 	public void setVehicleMonitoringRef(String vehicleMonitoringRef) {
 		this.vehicleMonitoringRef = vehicleMonitoringRef;
-	}	
+	}
+    
+	public List<ResponseListener> getListeners() {
+        return listeners;
+    }
+
+    public void setListeners(List<ResponseListener> listeners) {
+        this.listeners = listeners;
+    }
 }

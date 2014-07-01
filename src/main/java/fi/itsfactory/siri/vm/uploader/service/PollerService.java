@@ -21,8 +21,8 @@ public class PollerService extends AbstractScheduledService {
 
 	private static Logger logger = Logger.getLogger(PollerService.class.getName());
 	
-	public PollerService(Request request, List<ResponseListener> listeners) {
-		this.listeners = listeners;
+	public PollerService(Request request) {
+		this.listeners = request.getListeners();
 		this.request = request;
 		this.retryStage = 0;
 		
