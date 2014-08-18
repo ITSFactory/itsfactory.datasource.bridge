@@ -44,14 +44,18 @@ public class PollerService extends AbstractScheduledService {
 					}
 				}
 			}
+			
 		} catch (Exception e) {
+			
 			for (ResponseListener listener : listeners) {
 				try {
 					listener.handleException(e);
 				} catch (Exception ex) {
 					logger.log(Level.WARNING, "Listener error", ex);
 				}
-			}			
+			}
+			
+			logger.log(Level.WARNING, "Connection error", e);
 		}
 	}
 	@Override
