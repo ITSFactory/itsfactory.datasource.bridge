@@ -5,14 +5,17 @@ import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import fi.itsfactory.siri.vm.uploader.request.Request;
@@ -32,6 +35,13 @@ public class HttpConnector {
 		
         CloseableHttpClient client = HttpClients.custom()
                 .setDefaultRequestConfig(defaultRequestConfig)
+                .setKeepAliveStrategy(new ConnectionKeepAliveStrategy() {
+                    
+                    @Override
+                    public long getKeepAliveDuration(HttpResponse arg0, HttpContext arg1) {
+                        return 0;
+                    }
+                })
                 .build();
         
 		try{
