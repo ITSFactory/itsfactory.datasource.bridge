@@ -12,32 +12,21 @@ import fi.itsfactory.siri.vm.uploader.listener.ResponseListener;
 import fi.itsfactory.siri.vm.uploader.request.Request;
 
 public class PollerService extends AbstractScheduledService {
-	private final int RETRY_STAGE_MAX = 18;
-	private final int RETRY_STAGE_INCREMENT = 5;
 	
 	private List<ResponseListener> listeners;
 	private Request request;
-	private int retryStage;
 
 	private static Logger logger = Logger.getLogger(PollerService.class.getName());
 	
 	public PollerService(Request request) {
 		this.listeners = request.getListeners();
 		this.request = request;
-		this.retryStage = 0;
 		
 		logger.info("PollerService started up.");
 	}
 	
 	@Override
 	protected void runOneIteration() throws Exception {
-		long interval = retryStage * RETRY_STAGE_INCREMENT * 1000;
-		try {
-			Thread.sleep(interval);
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
-		
 		String response = null;
 		try {
 			long t1 = System.currentTimeMillis();
@@ -55,22 +44,14 @@ public class PollerService extends AbstractScheduledService {
 					}
 				}
 			}
-			
-			retryStage = 0;
 		} catch (Exception e) {
-			if(retryStage < RETRY_STAGE_MAX){
-				retryStage++;
-			}
-			
 			for (ResponseListener listener : listeners) {
 				try {
 					listener.handleException(e);
 				} catch (Exception ex) {
 					logger.log(Level.WARNING, "Listener error", ex);
 				}
-			}
-			
-			logger.log(Level.WARNING, "Connection error, retry stage "+retryStage+", interval: "+interval+" ms", e);
+			}			
 		}
 	}
 	@Override
