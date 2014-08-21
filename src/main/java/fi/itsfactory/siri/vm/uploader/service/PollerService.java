@@ -60,6 +60,6 @@ public class PollerService extends AbstractScheduledService {
 	}
 	@Override
 	protected Scheduler scheduler() {
-		return Scheduler.newFixedRateSchedule(0, this.request.getInterval(), TimeUnit.MILLISECONDS);
+		return Scheduler.newFixedDelaySchedule(0, this.request.getInterval(), TimeUnit.MILLISECONDS);
 	}
 }
